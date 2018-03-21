@@ -1,6 +1,6 @@
 {
   "name": "ascii-boxd",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "comma-separated string to ascii-boxes",
   "main": "index.js",
   "bin": {

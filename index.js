@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 "use strict";
 
 const s = `hej,pa,dig\nhoho`;
