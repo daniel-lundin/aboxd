@@ -1,12 +1,15 @@
 {
   "name": "boxd",
   "version": "1.0.0",
-  "description": "",
+  "description": "comma-separated string to ascii-boxes",
   "main": "index.js",
+  "bin": {
+    "boxd": "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "<d-dog@d-dog.se>",
+  "license": "MIT"
 }
