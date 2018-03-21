@@ -1,5 +1,5 @@
 {
-  "name": "boxd",
+  "name": "ascii-boxd",
   "version": "1.0.0",
   "description": "comma-separated string to ascii-boxes",
   "main": "index.js",
