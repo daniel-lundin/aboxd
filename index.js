@@ -2,15 +2,27 @@
 
 "use strict";
 
-const s = `hej,pa,dig\nhoho`;
+function padCenter(str, length) {
+  const leftOver = length - str.length;
+  const startPad = Math.floor(leftOver / 2);
+  const endPad = startPad + leftOver % 2;
+  return str
+    .padStart(str.length + startPad)
+    .padEnd(str.length + endPad + startPad);
+}
 
-function boxedString(str) {
-  const vertLength = str.length + 2;
+function boxedString(str, columnWidth) {
+  const vertLength = columnWidth + 2;
   const vertLine = Array.from({ length: vertLength })
-    .map(_ => "-")
+    .map(() => "-")
     .join("");
+  if (str.length === 0) {
+    const whitespace = "".padEnd(vertLength + 2);
+    return `${whitespace}\n${whitespace}\n${whitespace}`;
+  }
 
-  return `+${vertLine}+\n| ${str} |\n+${vertLine}+`;
+  const paddedString = padCenter(str, columnWidth);
+  return `+${vertLine}+\n| ${paddedString} |\n+${vertLine}+`;
 }
 
 function printJoinedBoxes(boxes) {
@@ -34,13 +46,26 @@ function printUsage() {
   process.exit(1);
 }
 
+function getColumnWidths(boxes) {
+  return boxes
+    .reduce((acc, curr) =>
+      curr.map(
+        (cell, index) => (cell.length > acc[index].length ? cell : acc[index])
+      )
+    )
+    .map(s => s.length);
+}
 if (require.main === module) {
   if (process.argv.length < 3) {
     printUsage();
   }
 
   const str = process.argv[2];
-  const boxes = str.split(",").map(s => boxedString(s));
+  const boxRows = str.split("\n").map(s => s.split(","));
+  const columnWidths = getColumnWidths(boxRows);
 
-  printJoinedBoxes(boxes);
+  const decoratedBoxes = boxRows.map(row => {
+    return row.map((cell, i) => boxedString(cell, columnWidths[i]));
+  });
+  decoratedBoxes.forEach(printJoinedBoxes);
 }

@@ -11,5 +11,8 @@
   },
   "keywords": [],
   "author": "<d-dog@d-dog.se>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  }
 }
