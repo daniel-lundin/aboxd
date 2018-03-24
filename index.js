@@ -25,15 +25,22 @@ function boxedString(str, columnWidth) {
   return `+${vertLine}+\n| ${paddedString} |\n+${vertLine}+`;
 }
 
+function isBoxEmpty(box) {
+  return Array.from(box).filter(s => s !== " " && s !== "\n").length === 0;
+}
+
 function printJoinedBoxes(boxes) {
   const rows = boxes.reduce((acc, box, index) => {
     const lines = box.split("\n");
     if (index === 0) {
       return [lines[0], lines[1], lines[2]];
     }
+    // console.log(boxes[index - 1]);
+    const line =
+      isBoxEmpty(box) || isBoxEmpty(boxes[index - 1]) ? "   " : "---";
     return [
       acc[0] + "   " + lines[0],
-      acc[1] + "---" + lines[1],
+      acc[1] + line + lines[1],
       acc[2] + "   " + lines[2]
     ];
   }, []);
