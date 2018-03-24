@@ -74,5 +74,19 @@ if (require.main === module) {
   const decoratedBoxes = boxRows.map(row => {
     return row.map((cell, i) => boxedString(cell, columnWidths[i]));
   });
-  decoratedBoxes.forEach(printJoinedBoxes);
+  decoratedBoxes.forEach((boxes, index) => {
+    if (decoratedBoxes[index - 1]) {
+      boxes.forEach((box, cellIndex) => {
+        const upperCell = decoratedBoxes[index - 1][cellIndex];
+        if (isBoxEmpty(upperCell) || isBoxEmpty(box)) {
+          process.stdout.write("".padStart(columnWidths[cellIndex] + 7));
+          return;
+        }
+        process.stdout.write(padCenter("|", columnWidths[cellIndex] + 4));
+        process.stdout.write("   ");
+      });
+    }
+    console.log("");
+    printJoinedBoxes(boxes);
+  });
 }
