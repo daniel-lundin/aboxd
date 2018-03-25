@@ -1,10 +1,10 @@
 {
-  "name": "ascii-boxd",
-  "version": "1.0.3",
+  "name": "aboxd",
+  "version": "0.0.1",
   "description": "comma-separated string to ascii-boxes",
   "main": "index.js",
   "bin": {
-    "ascii-boxd": "index.js"
+    "aboxd": "index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

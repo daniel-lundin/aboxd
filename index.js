@@ -2,6 +2,12 @@
 
 "use strict";
 
+const readline = require("readline");
+
+function repeatChar(chr, length) {
+  return Array.from({ length }, () => chr).join("");
+}
+
 function padCenter(str, length) {
   const leftOver = length - str.length;
   const startPad = Math.floor(leftOver / 2);
@@ -23,6 +29,47 @@ function boxedString(str, columnWidth) {
 
   const paddedString = padCenter(str, columnWidth);
   return `+${vertLine}+\n| ${paddedString} |\n+${vertLine}+`;
+}
+
+function connectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
+  const padValue = columnWidth + 4;
+  const leftOver = (padValue - 1) % 2;
+  let result = "";
+  // Top
+  if (boxRows[rowIndex - 1] && !isBoxEmpty(boxRows[rowIndex - 1][cellIndex])) {
+    result += padCenter("|", padValue);
+  } else {
+    result += padCenter(" ", padValue);
+  }
+
+  // Left
+  if (
+    boxRows[rowIndex][cellIndex - 1] &&
+    !isBoxEmpty(boxRows[rowIndex][cellIndex - 1])
+  ) {
+    result += `\n${repeatChar("-", Math.floor((padValue - 1) / 2))}`;
+  } else {
+    result += `\n${repeatChar(" ", Math.floor((padValue - 1) / 2))}`;
+  }
+  result += "+";
+  // Right
+  if (
+    boxRows[rowIndex][cellIndex + 1] &&
+    !isBoxEmpty(boxRows[rowIndex][cellIndex + 1])
+  ) {
+    result += `${repeatChar("-", Math.floor((padValue - 1) / 2) + leftOver)}`;
+  } else {
+    result += `${repeatChar(" ", Math.floor((padValue - 1) / 2) + leftOver)}`;
+  }
+
+  // Bottom
+  if (boxRows[rowIndex + 1] && !isBoxEmpty(boxRows[rowIndex + 1][cellIndex])) {
+    result += `\n${padCenter("|", padValue)}`;
+  } else {
+    result += `\n${padCenter(" ", padValue)}`;
+  }
+
+  return result;
 }
 
 function isBoxEmpty(box) {
@@ -49,7 +96,8 @@ function printJoinedBoxes(boxes) {
 }
 
 function printUsage() {
-  console.log("Usage: node boxd comma,string");
+  console.log("Usage: node boxd [comma-separated string]");
+  console.log("Or: node boxd --stdin");
   process.exit(1);
 }
 
@@ -62,17 +110,24 @@ function getColumnWidths(boxes) {
     )
     .map(s => s.length);
 }
-if (require.main === module) {
-  if (process.argv.length < 3) {
-    printUsage();
-  }
 
-  const str = process.argv[2];
+function createChart(str) {
   const boxRows = str.split("\n").map(s => s.split(","));
   const columnWidths = getColumnWidths(boxRows);
 
-  const decoratedBoxes = boxRows.map(row => {
-    return row.map((cell, i) => boxedString(cell, columnWidths[i]));
+  const decoratedBoxes = boxRows.map((row, rowIndex) => {
+    return row.map((cell, cellIndex) => {
+      if (cell === ".") {
+        return connectedBox(
+          boxRows,
+          rowIndex,
+          cellIndex,
+          columnWidths[cellIndex]
+        );
+      } else {
+        return boxedString(cell, columnWidths[cellIndex]);
+      }
+    });
   });
   decoratedBoxes.forEach((boxes, index) => {
     if (decoratedBoxes[index - 1]) {
@@ -89,4 +144,31 @@ if (require.main === module) {
     console.log("");
     printJoinedBoxes(boxes);
   });
+}
+
+if (require.main === module) {
+  if (process.argv.length < 3) {
+    printUsage();
+  }
+
+  const str = process.argv[2];
+
+  if (str === "--stdin") {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: false
+    });
+
+    const lines = [];
+    rl.on("line", function(line) {
+      lines.push(line);
+    });
+
+    rl.on("close", function() {
+      createChart(lines.join("\n"));
+    });
+  } else {
+    createChart(str);
+  }
 }
