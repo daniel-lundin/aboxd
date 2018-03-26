@@ -7,9 +7,12 @@
     "aboxd": "index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
-  "keywords": ["ascii", "chart"],
+  "keywords": [
+    "ascii",
+    "chart"
+  ],
   "author": "<d-dog@d-dog.se>",
   "license": "MIT",
   "repository": {
@@ -17,6 +20,7 @@
     "url": "https://github.com/daniel-lundin/aboxd.git"
   },
   "devDependencies": {
-    "eslint": "^4.19.1"
+    "eslint": "^4.19.1",
+    "jest": "^22.4.3"
   }
 }

@@ -96,8 +96,8 @@ function printJoinedBoxes(boxes) {
 }
 
 function printUsage() {
-  console.log("Usage: node boxd [comma-separated string]");
-  console.log("Or: node boxd --stdin");
+  console.log("Usage: node aboxd [comma-separated string]");
+  console.log("Or: node aboxd --stdin");
   process.exit(1);
 }
 

@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should fill in empty slots if a dot is present 1`] = `
+"
++------+   +------+
+| box1 |---| box2 |
++------+   +------+
+   |          |       
++------+      |    
+| box3 |------+    
++------+      |    
+   |          |       
++------+   +------+
+| box4 |---| box5 |
++------+   +------+
+"
+`;
+
+exports[`should render single box 1`] = `
+"
++-----+
+| box |
++-----+
+"
+`;
+
+exports[`should render three lines of boxes 1`] = `
+"
++------+   +------+
+| box1 |---| box2 |
++------+   +------+
+   |                  
++------+           
+| box3 |           
++------+           
+   |                  
++------+   +------+
+| box4 |---| box5 |
++------+   +------+
+"
+`;
+
+exports[`should render two boxes with lines between  1`] = `
+"
++------+   +------+
+| box1 |---| box2 |
++------+   +------+
+"
+`;
+
+exports[`should render two lines of boxes 1`] = `
+"
++------+   +------+
+| box1 |---| box2 |
++------+   +------+
+   |                  
++------+           
+| box3 |           
++------+           
+"
+`;
