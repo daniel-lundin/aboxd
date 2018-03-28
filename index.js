@@ -4,8 +4,8 @@
 
 const readline = require("readline");
 
-function repeatChar(chr, length) {
-  return Array.from({ length }, () => chr).join("");
+function repeatStr(chr, length, delimiter = "") {
+  return Array.from({ length }, () => chr).join(delimiter);
 }
 
 function padCenter(str, length) {
@@ -17,21 +17,34 @@ function padCenter(str, length) {
     .padEnd(str.length + endPad + startPad);
 }
 
-function boxedString(str, columnWidth) {
+function boxedString(str, columnWidth, rowHeight) {
   const vertLength = columnWidth + 2;
   const vertLine = Array.from({ length: vertLength })
     .map(() => "-")
     .join("");
-  if (str.length === 0) {
-    const whitespace = "".padEnd(vertLength + 2);
-    return `${whitespace}\n${whitespace}\n${whitespace}`;
+  if (str.length === 0 || str === ".") {
+    const whitespace = " ".padEnd(vertLength + 2);
+    return repeatStr(whitespace, rowHeight, "\n");
   }
 
   const paddedString = padCenter(str, columnWidth);
   return `+${vertLine}+\n| ${paddedString} |\n+${vertLine}+`;
 }
 
-function connectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
+function smallConnectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
+  const padValue = columnWidth + 4;
+  if (boxRows[rowIndex - 1] && !isBoxEmpty(boxRows[rowIndex - 1][cellIndex])) {
+    return padCenter("|", padValue);
+  } else {
+    return padCenter(" ", padValue);
+  }
+}
+
+function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
+  if (rowHeight === 1) {
+    return smallConnectedBox(boxRows, rowIndex, cellIndex, columnWidth);
+  }
+
   const padValue = columnWidth + 4;
   const leftOver = (padValue - 1) % 2;
   let result = "";
@@ -47,9 +60,9 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
     boxRows[rowIndex][cellIndex - 1] &&
     !isBoxEmpty(boxRows[rowIndex][cellIndex - 1])
   ) {
-    result += `\n${repeatChar("-", Math.floor((padValue - 1) / 2))}`;
+    result += `\n${repeatStr("-", Math.floor((padValue - 1) / 2))}`;
   } else {
-    result += `\n${repeatChar(" ", Math.floor((padValue - 1) / 2))}`;
+    result += `\n${repeatStr(" ", Math.floor((padValue - 1) / 2))}`;
   }
   result += "+";
   // Right
@@ -57,9 +70,9 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
     boxRows[rowIndex][cellIndex + 1] &&
     !isBoxEmpty(boxRows[rowIndex][cellIndex + 1])
   ) {
-    result += `${repeatChar("-", Math.floor((padValue - 1) / 2) + leftOver)}`;
+    result += `${repeatStr("-", Math.floor((padValue - 1) / 2) + leftOver)}`;
   } else {
-    result += `${repeatChar(" ", Math.floor((padValue - 1) / 2) + leftOver)}`;
+    result += `${repeatStr(" ", Math.floor((padValue - 1) / 2) + leftOver)}`;
   }
 
   // Bottom
@@ -76,13 +89,15 @@ function isBoxEmpty(box) {
   return Array.from(box).filter(s => s !== " " && s !== "\n").length === 0;
 }
 
-function printJoinedBoxes(boxes) {
+function printJoinedBoxes(boxes, rowHeight) {
+  if (rowHeight === 1) {
+    return process.stdout.write(boxes.join("   "));
+  }
   const rows = boxes.reduce((acc, box, index) => {
     const lines = box.split("\n");
     if (index === 0) {
       return [lines[0], lines[1], lines[2]];
     }
-    // console.log(boxes[index - 1]);
     const line =
       isBoxEmpty(box) || isBoxEmpty(boxes[index - 1]) ? "   " : "---";
     return [
@@ -111,9 +126,18 @@ function getColumnWidths(boxes) {
     .map(s => s.length);
 }
 
+function getRowHeights(boxes) {
+  return boxes.map(row => {
+    const rowEmpty =
+      row.filter(cell => cell.length !== 0 && cell !== ".").length === 0;
+    return rowEmpty ? 1 : 3;
+  });
+}
+
 function createChart(str) {
   const boxRows = str.split("\n").map(s => s.split(","));
   const columnWidths = getColumnWidths(boxRows);
+  const rowHeights = getRowHeights(boxRows);
 
   const decoratedBoxes = boxRows.map((row, rowIndex) => {
     return row.map((cell, cellIndex) => {
@@ -122,15 +146,17 @@ function createChart(str) {
           boxRows,
           rowIndex,
           cellIndex,
-          columnWidths[cellIndex]
+          columnWidths[cellIndex],
+          rowHeights[rowIndex]
         );
       } else {
-        return boxedString(cell, columnWidths[cellIndex]);
+        return boxedString(cell, columnWidths[cellIndex], rowHeights[rowIndex]);
       }
     });
   });
+
   decoratedBoxes.forEach((boxes, index) => {
-    if (decoratedBoxes[index - 1]) {
+    if (decoratedBoxes[index - 1] && rowHeights[index - 1] !== 1) {
       boxes.forEach((box, cellIndex) => {
         const upperCell = decoratedBoxes[index - 1][cellIndex];
         if (isBoxEmpty(upperCell) || isBoxEmpty(box)) {
@@ -141,8 +167,8 @@ function createChart(str) {
         process.stdout.write("   ");
       });
     }
-    console.log("");
-    printJoinedBoxes(boxes);
+    process.stdout.write("\n");
+    printJoinedBoxes(boxes, rowHeights[index]);
   });
 }
 
@@ -153,7 +179,7 @@ if (require.main === module) {
 
   const str = process.argv[2];
 
-  if (str === "--stdin") {
+  if (str === "-") {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,

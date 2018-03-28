@@ -59,3 +59,16 @@ exports[`should render two lines of boxes 1`] = `
 +------+           
 "
 `;
+
+exports[`should tighten up for empty rows 1`] = `
+"
++------+   +------+
+| box1 |---| box2 |
++------+   +------+
+              |       
+              |    
++------+   +------+
+| box4 |---| box5 |
++------+   +------+
+"
+`;

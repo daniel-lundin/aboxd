@@ -48,3 +48,9 @@ it("should fill in empty slots if a dot is present", async () => {
 
   expect(output).toMatchSnapshot();
 });
+
+it("should tighten up for empty rows", async () => {
+  const output = await runAboxd("box1,box2\n,.\nbox4,box5");
+
+  expect(output).toMatchSnapshot();
+});
