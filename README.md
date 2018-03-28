@@ -4,6 +4,8 @@
 
 Turn comma-separated strings to ascii-charts.
 
+![img](assets/aboxd.gif)
+
 ## Examples
 
 `npx aboxd 'left,right'` will yield:
@@ -69,6 +71,13 @@ Subway,.
 +--------+             
 ```
 
+## Vim plugin
+
+Plugin is a stretch, but add this to .vimrc to trigger aboxd on the current selection with `<leader>a`:
+
+```
+vnoremap <leader>a :!npx aboxd -<CR>
+```
 
 ## LICENSE
 
