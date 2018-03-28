@@ -21,36 +21,40 @@ async function runAboxd(str) {
 
 it("should render single box", async () => {
   const output = await runAboxd("box");
-
   expect(output).toMatchSnapshot();
 });
 
 it("should render two boxes with lines between ", async () => {
   const output = await runAboxd("box1,box2");
-
   expect(output).toMatchSnapshot();
 });
 
 it("should render two lines of boxes", async () => {
   const output = await runAboxd("box1,box2\nbox3,");
-
   expect(output).toMatchSnapshot();
 });
 
 it("should render three lines of boxes", async () => {
   const output = await runAboxd("box1,box2\nbox3,\nbox4,box5");
-
   expect(output).toMatchSnapshot();
 });
 
 it("should fill in empty slots if a dot is present", async () => {
   const output = await runAboxd("box1,box2\nbox3,.\nbox4,box5");
-
   expect(output).toMatchSnapshot();
 });
 
-it("should tighten up for empty rows", async () => {
+it("should tighten up for rows", async () => {
   const output = await runAboxd("box1,box2\n,.\nbox4,box5");
+  expect(output).toMatchSnapshot();
+});
 
+it("pad lines with fewer cells", async () => {
+  const output = await runAboxd("box1,box2\nbox3");
+  expect(output).toMatchSnapshot();
+});
+
+it("should leave gaps in empty cells", async () => {
+  const output = await runAboxd("box1,,box2\nbox3,box4,box5\n,bottom");
   expect(output).toMatchSnapshot();
 });

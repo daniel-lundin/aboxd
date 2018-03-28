@@ -8,6 +8,10 @@ function repeatStr(chr, length, delimiter = "") {
   return Array.from({ length }, () => chr).join(delimiter);
 }
 
+function emptyStrings(length) {
+  return Array.from({ length }, () => "");
+}
+
 function padCenter(str, length) {
   const leftOver = length - str.length;
   const startPad = Math.floor(leftOver / 2);
@@ -134,8 +138,22 @@ function getRowHeights(boxes) {
   });
 }
 
+function getMaxColumnCount(boxRows) {
+  return boxRows.reduce((max, row) => Math.max(max, row.length), 0);
+}
+
+function normalizeInput(str) {
+  const rows = str.split("\n").map(s => s.split(","));
+  const maxColumnCount = getMaxColumnCount(rows);
+  return rows.map(
+    row =>
+      row.length < maxColumnCount
+        ? row.concat(emptyStrings(maxColumnCount - row.length))
+        : row
+  );
+}
 function createChart(str) {
-  const boxRows = str.split("\n").map(s => s.split(","));
+  const boxRows = normalizeInput(str);
   const columnWidths = getColumnWidths(boxRows);
   const rowHeights = getRowHeights(boxRows);
 

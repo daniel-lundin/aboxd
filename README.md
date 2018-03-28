@@ -41,7 +41,7 @@ Use a dot(".") to connect boxes without text:
 
 ### From files
 
-aboxd will read from stdin if --stdin is passed instead of a string
+aboxd will read from stdin if `-` is passed instead of a string
 
 Given a file:
 
@@ -51,7 +51,7 @@ Sweden,Norway
 Subway,.
 ```
 
-`cat file | npx aboxd --stdin`
+`cat file | npx aboxd -`
 
 ```
              +--------+
