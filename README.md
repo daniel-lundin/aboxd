@@ -1,5 +1,5 @@
 # aboxd
-[![Build Status](https://travis-ci.org/daniel-lundin/aboxd.svg?branch=master)]
+[![Build Status](https://travis-ci.org/daniel-lundin/aboxd.svg?branch=master)](https://travis-ci.org/daniel-lundin/aboxd)
 [![npm version](https://badge.fury.io/js/aboxd.svg)](https://badge.fury.io/js/aboxd)
 
 Turn comma-separated strings to ascii-charts.
