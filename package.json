@@ -4,7 +4,7 @@
   "description": "comma-separated string to ascii-boxes",
   "main": "index.js",
   "bin": {
-    "aboxd": "index.js"
+    "aboxd": "bin.js"
   },
   "scripts": {
     "test": "jest && eslint index.js",
