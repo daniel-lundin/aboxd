@@ -180,4 +180,4 @@ function createChart(str) {
   });
 }
 
-module.exports = createChart;
+module.exports = { createChart };

@@ -2,7 +2,7 @@
 
 const pkg = require("./package.json");
 const readline = require("readline");
-const createChart = require("./index.js");
+const { createChart } = require("./index.js");
 
 function printUsage() {
   console.log(`aboxd ${pkg.version}`);
