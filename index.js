@@ -2,6 +2,10 @@
 
 "use strict";
 
+const pkg = require("./package.json");
+
+// const PIPE  = '│';
+
 const readline = require("readline");
 
 function repeatStr(chr, length, delimiter = "") {
@@ -115,8 +119,10 @@ function printJoinedBoxes(boxes, rowHeight) {
 }
 
 function printUsage() {
+  console.log(`aboxd ${pkg.version}`);
+  console.log("");
   console.log("Usage: node aboxd [comma-separated string]");
-  console.log("Or: node aboxd --stdin");
+  console.log("Or: node aboxd (to read from stdin)");
   process.exit(1);
 }
 
@@ -191,13 +197,13 @@ function createChart(str) {
 }
 
 if (require.main === module) {
-  if (process.argv.length < 3) {
+  const str = process.argv[2];
+
+  if (["-h", "-v"].some(option => option === str)) {
     printUsage();
   }
 
-  const str = process.argv[2];
-
-  if (str === "-") {
+  if (!str || str === "-") {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
