@@ -1,6 +1,6 @@
 {
   "name": "aboxd",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "comma-separated string to ascii-boxes",
   "main": "index.js",
   "bin": {
