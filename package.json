@@ -7,7 +7,8 @@
     "aboxd": "index.js"
   },
   "scripts": {
-    "test": "jest && eslint index.js"
+    "test": "jest && eslint index.js",
+    "bump": "bump --prompt --tag --push"
   },
   "keywords": [
     "ascii",
