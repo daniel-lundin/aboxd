@@ -221,4 +221,6 @@ if (require.main === module) {
   } else {
     createChart(str);
   }
+} else {
+  module.exports = createChart;
 }
