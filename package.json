@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "jest && eslint index.js",
-    "bump": "bump --prompt --tag --push"
+    "bump": "bump --prompt --tag --push",
+    "publish-ui": "cd ui && npm run bundle && gh-pages -d dist"
   },
   "keywords": [
     "ascii",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "eslint": "^4.19.1",
+    "gh-pages": "^1.1.0",
     "jest": "^22.4.3",
     "version-bump-prompt": "^4.0.0"
   }

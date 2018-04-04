@@ -1,0 +1,41 @@
+body, html, main {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 18px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#input {
+  flex: 1;
+  font-size: 18px;
+}
+
+#output-container  {
+  flex: 2;
+  display: flex;
+  background: #111111;
+}
+
+#output {
+  font-family: 'Roboto Mono', monospace;
+  color: #64ceaa;
+  margin: 0 auto;
+}
