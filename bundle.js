@@ -1,6 +1,13 @@
 (function () {
   'use strict';
 
+  const VERTICAL = "│";
+  const HORIZONTAL = "─";
+  const TOP_LEFT = "┌";
+  const TOP_RIGHT = "┐";
+  const BOTTOM_LEFT = "└";
+  const BOTTOM_RIGHT = "┘";
+
   function repeatStr(chr, length, delimiter = "") {
     return Array.from({ length }, () => chr).join(delimiter);
   }
@@ -20,25 +27,61 @@
 
   function boxedString(str, columnWidth, rowHeight) {
     const vertLength = columnWidth + 2;
-    const vertLine = Array.from({ length: vertLength })
-      .map(() => "-")
-      .join("");
+    const vertLine = repeatStr(HORIZONTAL, vertLength);
     if (str.length === 0 || str === ".") {
       const whitespace = " ".padEnd(vertLength + 2);
       return repeatStr(whitespace, rowHeight, "\n");
     }
 
     const paddedString = padCenter(str, columnWidth);
-    return `+${vertLine}+\n| ${paddedString} |\n+${vertLine}+`;
+    return `${TOP_LEFT}${vertLine}${TOP_RIGHT}\n${VERTICAL} ${paddedString} ${VERTICAL}\n${BOTTOM_LEFT}${vertLine}${BOTTOM_RIGHT}`;
   }
 
   function smallConnectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
     const padValue = columnWidth + 4;
     if (boxRows[rowIndex - 1] && !isBoxEmpty(boxRows[rowIndex - 1][cellIndex])) {
-      return padCenter("|", padValue);
+      return padCenter(VERTICAL, padValue);
     } else {
       return padCenter(" ", padValue);
     }
+  }
+
+  function jointPoint(hasTop, hasBottom, hasLeft, hasRight) {
+    if (hasTop && hasBottom && hasLeft && hasRight) {
+      return "┼";
+    }
+    if (hasTop && hasBottom && hasLeft) {
+      return "┤";
+    }
+    if (hasTop && hasBottom && hasRight) {
+      return "├";
+    }
+    if (hasBottom && hasRight && hasLeft) {
+      return "┬";
+    }
+    if (hasTop && hasRight && hasLeft) {
+      return "┴";
+    }
+    if (hasRight && hasBottom) {
+      return TOP_LEFT;
+    }
+    if (hasLeft && hasBottom) {
+      return TOP_RIGHT;
+    }
+    if (hasTop && hasRight) {
+      return BOTTOM_LEFT;
+    }
+    if (hasLeft && hasTop) {
+      return BOTTOM_RIGHT;
+    }
+    if (hasLeft && hasRight) {
+      return HORIZONTAL;
+    }
+    if (hasTop && hasBottom) {
+      return VERTICAL;
+    }
+
+    return "x";
   }
 
   function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
@@ -49,36 +92,42 @@
     const padValue = columnWidth + 4;
     const leftOver = (padValue - 1) % 2;
     let result = "";
-    // Top
-    if (boxRows[rowIndex - 1] && !isBoxEmpty(boxRows[rowIndex - 1][cellIndex])) {
-      result += padCenter("|", padValue);
+
+    const hasTop =
+      boxRows[rowIndex - 1] && !isBoxEmpty(boxRows[rowIndex - 1][cellIndex]);
+    const hasLeft =
+      boxRows[rowIndex][cellIndex - 1] &&
+      !isBoxEmpty(boxRows[rowIndex][cellIndex - 1]);
+    const hasRight =
+      boxRows[rowIndex][cellIndex + 1] &&
+      !isBoxEmpty(boxRows[rowIndex][cellIndex + 1]);
+    const hasBottom =
+      boxRows[rowIndex + 1] && !isBoxEmpty(boxRows[rowIndex + 1][cellIndex]);
+
+    if (hasTop) {
+      result += padCenter(VERTICAL, padValue);
     } else {
       result += padCenter(" ", padValue);
     }
 
-    // Left
-    if (
-      boxRows[rowIndex][cellIndex - 1] &&
-      !isBoxEmpty(boxRows[rowIndex][cellIndex - 1])
-    ) {
-      result += `\n${repeatStr("-", Math.floor((padValue - 1) / 2))}`;
+    if (hasLeft) {
+      result += `\n${repeatStr(HORIZONTAL, Math.floor((padValue - 1) / 2))}`;
     } else {
       result += `\n${repeatStr(" ", Math.floor((padValue - 1) / 2))}`;
     }
-    result += "+";
-    // Right
-    if (
-      boxRows[rowIndex][cellIndex + 1] &&
-      !isBoxEmpty(boxRows[rowIndex][cellIndex + 1])
-    ) {
-      result += `${repeatStr("-", Math.floor((padValue - 1) / 2) + leftOver)}`;
+    result += jointPoint(hasTop, hasBottom, hasLeft, hasRight);
+
+    if (hasRight) {
+      result += `${repeatStr(
+      HORIZONTAL,
+      Math.floor((padValue - 1) / 2) + leftOver
+    )}`;
     } else {
       result += `${repeatStr(" ", Math.floor((padValue - 1) / 2) + leftOver)}`;
     }
 
-    // Bottom
-    if (boxRows[rowIndex + 1] && !isBoxEmpty(boxRows[rowIndex + 1][cellIndex])) {
-      result += `\n${padCenter("|", padValue)}`;
+    if (hasBottom) {
+      result += `\n${padCenter(VERTICAL, padValue)}`;
     } else {
       result += `\n${padCenter(" ", padValue)}`;
     }
@@ -100,7 +149,9 @@
         return [lines[0], lines[1], lines[2]];
       }
       const line =
-        isBoxEmpty(box) || isBoxEmpty(boxes[index - 1]) ? "   " : "---";
+        isBoxEmpty(box) || isBoxEmpty(boxes[index - 1])
+          ? "   "
+          : repeatStr(HORIZONTAL, 3);
       return [
         acc[0] + "   " + lines[0],
         acc[1] + line + lines[1],
@@ -167,13 +218,18 @@
     decoratedBoxes.forEach((boxes, index) => {
       if (decoratedBoxes[index - 1] && rowHeights[index - 1] !== 1) {
         boxes.forEach((box, cellIndex) => {
+          const isLast = cellIndex === boxes.length - 1;
           const upperCell = decoratedBoxes[index - 1][cellIndex];
           if (isBoxEmpty(upperCell) || isBoxEmpty(box)) {
-            process.stdout.write("".padStart(columnWidths[cellIndex] + 7));
+            process.stdout.write(
+              "".padStart(columnWidths[cellIndex] + (isLast ? 4 : 7))
+            );
             return;
           }
-          process.stdout.write(padCenter("|", columnWidths[cellIndex] + 4));
-          process.stdout.write("   ");
+          process.stdout.write(padCenter(VERTICAL, columnWidths[cellIndex] + 4));
+          if (!isLast) {
+            process.stdout.write("   ");
+          }
         });
       }
       process.stdout.write("\n");
