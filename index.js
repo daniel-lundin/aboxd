@@ -18,7 +18,7 @@ const bold = {
   BOTTOM_RIGHT: "┛"
 };
 
-let theme = bold;
+let theme = simple;
 
 function repeatStr(chr, length, delimiter = "") {
   return Array.from({ length }, () => chr).join(delimiter);
