@@ -11,22 +11,21 @@ Turn comma-separated strings to ascii-charts.
 `npx aboxd 'left,right'` will yield:
 
 ```
-+------+   +-------+
-| left |---| right |
-+------+   +-------+
+┌──────┐   ┌───────┐
+│ left │───│ right │
+└──────┘   └───────┘
 ```
 
 `npx aboxd $',top\nbottom-left,bottom-right'` will yield:
 
 ```
-
-                  +--------------+
-                  |     top      |
-                  +--------------+
-                         |           
-+-------------+   +--------------+
-| bottom-left |---| bottom-right |
-+-------------+   +--------------+
+                  ┌──────────────┐
+                  │     top      │
+                  └──────────────┘
+                         │        
+┌─────────────┐   ┌──────────────┐
+│ bottom-left │───│ bottom-right │
+└─────────────┘   └──────────────┘
 ```
 
 Use a dot(".") to connect boxes without text:
@@ -34,13 +33,14 @@ Use a dot(".") to connect boxes without text:
 `npx aboxd $'.,top\nbottom-left,bottom-right'` will yield:
 
 ```
-                  +--------------+
-       +----------|     top      |
-       |          +--------------+
-       |                 |           
-+-------------+   +--------------+
-| bottom-left |---| bottom-right |
-+-------------+   +--------------+
+
+                  ┌──────────────┐
+       ┌──────────│     top      │
+       │          └──────────────┘
+       │                 │        
+┌─────────────┐   ┌──────────────┐
+│ bottom-left │───│ bottom-right │
+└─────────────┘   └──────────────┘
 ```
 
 ### From files
@@ -58,17 +58,18 @@ Subway,.
 `cat file | npx aboxd`
 
 ```
-             +--------+
-             |  Sky   |
-             +--------+
-                 |        
-+--------+   +--------+
-| Sweden |---| Norway |
-+--------+   +--------+
-    |            |        
-+--------+       |     
-| Subway |-------+     
-+--------+             
+
+             ┌────────┐
+             │  Sky   │
+             └────────┘
+                 │     
+┌────────┐   ┌────────┐
+│ Sweden │───│ Norway │
+└────────┘   └────────┘
+    │            │     
+┌────────┐       │     
+│ Subway │───────┘     
+└────────┘             
 ```
 
 ## Vim plugin
