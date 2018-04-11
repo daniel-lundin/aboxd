@@ -1,24 +1,11 @@
 "use strict";
 
-const simple = {
-  VERTICAL: "│",
-  HORIZONTAL: "─",
-  TOP_LEFT: "┌",
-  TOP_RIGHT: "┐",
-  BOTTOM_LEFT: "└",
-  BOTTOM_RIGHT: "┘"
-};
-
-const bold = {
-  VERTICAL: "┃",
-  HORIZONTAL: "━",
-  TOP_LEFT: "┏",
-  TOP_RIGHT: "┓",
-  BOTTOM_LEFT: "┗",
-  BOTTOM_RIGHT: "┛"
-};
-
-let theme = simple;
+const VERTICAL = "│";
+const HORIZONTAL = "─";
+const TOP_LEFT = "┌";
+const TOP_RIGHT = "┐";
+const BOTTOM_LEFT = "└";
+const BOTTOM_RIGHT = "┘";
 
 function repeatStr(chr, length, delimiter = "") {
   return Array.from({ length }, () => chr).join(delimiter);
@@ -38,14 +25,6 @@ function padCenter(str, length) {
 }
 
 function boxedString(str, columnWidth, rowHeight) {
-  const {
-    HORIZONTAL,
-    VERTICAL,
-    TOP_LEFT,
-    TOP_RIGHT,
-    BOTTOM_LEFT,
-    BOTTOM_RIGHT
-  } = theme;
   const vertLength = columnWidth + 2;
   const vertLine = repeatStr(HORIZONTAL, vertLength);
   if (str.length === 0 || str === ".") {
@@ -60,7 +39,7 @@ function boxedString(str, columnWidth, rowHeight) {
 function smallConnectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
   const padValue = columnWidth + 4;
   if (boxRows[rowIndex - 1] && !isBoxEmpty(boxRows[rowIndex - 1][cellIndex])) {
-    return padCenter(theme.VERTICAL, padValue);
+    return padCenter(VERTICAL, padValue);
   } else {
     return padCenter(" ", padValue);
   }
@@ -83,22 +62,22 @@ function jointPoint(hasTop, hasBottom, hasLeft, hasRight) {
     return "┴";
   }
   if (hasRight && hasBottom) {
-    return theme.TOP_LEFT;
+    return TOP_LEFT;
   }
   if (hasLeft && hasBottom) {
-    return theme.TOP_RIGHT;
+    return TOP_RIGHT;
   }
   if (hasTop && hasRight) {
-    return theme.BOTTOM_LEFT;
+    return BOTTOM_LEFT;
   }
   if (hasLeft && hasTop) {
-    return theme.BOTTOM_RIGHT;
+    return BOTTOM_RIGHT;
   }
   if (hasLeft && hasRight) {
-    return theme.HORIZONTAL;
+    return HORIZONTAL;
   }
   if (hasTop && hasBottom) {
-    return theme.VERTICAL;
+    return VERTICAL;
   }
 
   return "x";
@@ -125,16 +104,13 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
     boxRows[rowIndex + 1] && !isBoxEmpty(boxRows[rowIndex + 1][cellIndex]);
 
   if (hasTop) {
-    result += padCenter(theme.VERTICAL, padValue);
+    result += padCenter(VERTICAL, padValue);
   } else {
     result += padCenter(" ", padValue);
   }
 
   if (hasLeft) {
-    result += `\n${repeatStr(
-      theme.HORIZONTAL,
-      Math.floor((padValue - 1) / 2)
-    )}`;
+    result += `\n${repeatStr(HORIZONTAL, Math.floor((padValue - 1) / 2))}`;
   } else {
     result += `\n${repeatStr(" ", Math.floor((padValue - 1) / 2))}`;
   }
@@ -142,7 +118,7 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
 
   if (hasRight) {
     result += `${repeatStr(
-      theme.HORIZONTAL,
+      HORIZONTAL,
       Math.floor((padValue - 1) / 2) + leftOver
     )}`;
   } else {
@@ -150,7 +126,7 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
   }
 
   if (hasBottom) {
-    result += `\n${padCenter(theme.VERTICAL, padValue)}`;
+    result += `\n${padCenter(VERTICAL, padValue)}`;
   } else {
     result += `\n${padCenter(" ", padValue)}`;
   }
@@ -174,7 +150,7 @@ function printJoinedBoxes(boxes, rowHeight) {
     const line =
       isBoxEmpty(box) || isBoxEmpty(boxes[index - 1])
         ? "   "
-        : repeatStr(theme.HORIZONTAL, 3);
+        : repeatStr(HORIZONTAL, 3);
     return [
       acc[0] + "   " + lines[0],
       acc[1] + line + lines[1],
@@ -246,9 +222,7 @@ function createChart(str) {
           process.stdout.write("".padStart(columnWidths[cellIndex] + 7));
           return;
         }
-        process.stdout.write(
-          padCenter(theme.VERTICAL, columnWidths[cellIndex] + 4)
-        );
+        process.stdout.write(padCenter(VERTICAL, columnWidths[cellIndex] + 4));
         process.stdout.write("   ");
       });
     }
