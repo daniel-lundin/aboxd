@@ -3,6 +3,7 @@
 [![npm version](https://badge.fury.io/js/aboxd.svg)](https://badge.fury.io/js/aboxd)
 
 Turn comma-separated strings to ascii-charts.
+Try it live [here](https://daniel-lundin.github.io/aboxd/)
 
 ![img](assets/aboxd.gif)
 
