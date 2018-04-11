@@ -138,9 +138,9 @@ function isBoxEmpty(box) {
   return Array.from(box).filter(s => s !== " " && s !== "\n").length === 0;
 }
 
-function printJoinedBoxes(boxes, rowHeight) {
+function joinedBoxes(boxes, rowHeight) {
   if (rowHeight === 1) {
-    return process.stdout.write(boxes.join("   "));
+    return boxes.join("   ");
   }
   const rows = boxes.reduce((acc, box, index) => {
     const lines = box.split("\n");
@@ -158,7 +158,7 @@ function printJoinedBoxes(boxes, rowHeight) {
     ];
   }, []);
 
-  rows.forEach(row => console.log(row));
+  return rows.join("\n");
 }
 
 function getColumnWidths(boxes) {
@@ -214,26 +214,26 @@ function createChart(str) {
     });
   });
 
-  decoratedBoxes.forEach((boxes, index) => {
+  const res = decoratedBoxes.map((boxes, index) => {
+    let connectRow = "";
     if (decoratedBoxes[index - 1] && rowHeights[index - 1] !== 1) {
       boxes.forEach((box, cellIndex) => {
         const isLast = cellIndex === boxes.length - 1;
         const upperCell = decoratedBoxes[index - 1][cellIndex];
         if (isBoxEmpty(upperCell) || isBoxEmpty(box)) {
-          process.stdout.write(
-            "".padStart(columnWidths[cellIndex] + (isLast ? 4 : 7))
-          );
+          connectRow += "".padStart(columnWidths[cellIndex] + (isLast ? 4 : 7));
           return;
         }
-        process.stdout.write(padCenter(VERTICAL, columnWidths[cellIndex] + 4));
+        connectRow += padCenter(VERTICAL, columnWidths[cellIndex] + 4);
         if (!isLast) {
-          process.stdout.write("   ");
+          connectRow += "   ";
         }
       });
+      connectRow += "\n";
     }
-    process.stdout.write("\n");
-    printJoinedBoxes(boxes, rowHeights[index]);
+    return connectRow + joinedBoxes(boxes, rowHeights[index]);
   });
+  return res.join("\n");
 }
 
 module.exports = { createChart };

@@ -31,8 +31,8 @@ if (!str || str === "-") {
   });
 
   rl.on("close", function() {
-    createChart(lines.join("\n"));
+    console.log(createChart(lines.join("\n")));
   });
 } else {
-  createChart(str);
+  console.log(createChart(str));
 }
