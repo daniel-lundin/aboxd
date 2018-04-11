@@ -217,13 +217,18 @@ function createChart(str) {
   decoratedBoxes.forEach((boxes, index) => {
     if (decoratedBoxes[index - 1] && rowHeights[index - 1] !== 1) {
       boxes.forEach((box, cellIndex) => {
+        const isLast = cellIndex === boxes.length - 1;
         const upperCell = decoratedBoxes[index - 1][cellIndex];
         if (isBoxEmpty(upperCell) || isBoxEmpty(box)) {
-          process.stdout.write("".padStart(columnWidths[cellIndex] + 7));
+          process.stdout.write(
+            "".padStart(columnWidths[cellIndex] + (isLast ? 4 : 7))
+          );
           return;
         }
         process.stdout.write(padCenter(VERTICAL, columnWidths[cellIndex] + 4));
-        process.stdout.write("   ");
+        if (!isLast) {
+          process.stdout.write("   ");
+        }
       });
     }
     process.stdout.write("\n");
