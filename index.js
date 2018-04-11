@@ -1,7 +1,24 @@
 "use strict";
 
-const VERTICAL = "│";
-const HORIZONTAL = "─";
+const simple = {
+  VERTICAL: "│",
+  HORIZONTAL: "─",
+  TOP_LEFT: "┌",
+  TOP_RIGHT: "┐",
+  BOTTOM_LEFT: "└",
+  BOTTOM_RIGHT: "┘"
+};
+
+const bold = {
+  VERTICAL: "┃",
+  HORIZONTAL: "━",
+  TOP_LEFT: "┏",
+  TOP_RIGHT: "┓",
+  BOTTOM_LEFT: "┗",
+  BOTTOM_RIGHT: "┛"
+};
+
+let theme = bold;
 
 function repeatStr(chr, length, delimiter = "") {
   return Array.from({ length }, () => chr).join(delimiter);
@@ -21,6 +38,14 @@ function padCenter(str, length) {
 }
 
 function boxedString(str, columnWidth, rowHeight) {
+  const {
+    HORIZONTAL,
+    VERTICAL,
+    TOP_LEFT,
+    TOP_RIGHT,
+    BOTTOM_LEFT,
+    BOTTOM_RIGHT
+  } = theme;
   const vertLength = columnWidth + 2;
   const vertLine = repeatStr(HORIZONTAL, vertLength);
   if (str.length === 0 || str === ".") {
@@ -29,13 +54,13 @@ function boxedString(str, columnWidth, rowHeight) {
   }
 
   const paddedString = padCenter(str, columnWidth);
-  return `╭${vertLine}╮\n${VERTICAL} ${paddedString} ${VERTICAL}\n╰${vertLine}╯`;
+  return `${TOP_LEFT}${vertLine}${TOP_RIGHT}\n${VERTICAL} ${paddedString} ${VERTICAL}\n${BOTTOM_LEFT}${vertLine}${BOTTOM_RIGHT}`;
 }
 
 function smallConnectedBox(boxRows, rowIndex, cellIndex, columnWidth) {
   const padValue = columnWidth + 4;
   if (boxRows[rowIndex - 1] && !isBoxEmpty(boxRows[rowIndex - 1][cellIndex])) {
-    return padCenter(VERTICAL, padValue);
+    return padCenter(theme.VERTICAL, padValue);
   } else {
     return padCenter(" ", padValue);
   }
@@ -58,22 +83,22 @@ function jointPoint(hasTop, hasBottom, hasLeft, hasRight) {
     return "┴";
   }
   if (hasRight && hasBottom) {
-    return "╭";
+    return theme.TOP_LEFT;
   }
   if (hasLeft && hasBottom) {
-    return "╮";
+    return theme.TOP_RIGHT;
   }
   if (hasTop && hasRight) {
-    return "╰";
+    return theme.BOTTOM_LEFT;
   }
   if (hasLeft && hasTop) {
-    return "╯";
+    return theme.BOTTOM_RIGHT;
   }
   if (hasLeft && hasRight) {
-    return HORIZONTAL;
+    return theme.HORIZONTAL;
   }
   if (hasTop && hasBottom) {
-    return VERTICAL;
+    return theme.VERTICAL;
   }
 
   return "x";
@@ -100,13 +125,16 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
     boxRows[rowIndex + 1] && !isBoxEmpty(boxRows[rowIndex + 1][cellIndex]);
 
   if (hasTop) {
-    result += padCenter(VERTICAL, padValue);
+    result += padCenter(theme.VERTICAL, padValue);
   } else {
     result += padCenter(" ", padValue);
   }
 
   if (hasLeft) {
-    result += `\n${repeatStr(HORIZONTAL, Math.floor((padValue - 1) / 2))}`;
+    result += `\n${repeatStr(
+      theme.HORIZONTAL,
+      Math.floor((padValue - 1) / 2)
+    )}`;
   } else {
     result += `\n${repeatStr(" ", Math.floor((padValue - 1) / 2))}`;
   }
@@ -114,7 +142,7 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
 
   if (hasRight) {
     result += `${repeatStr(
-      HORIZONTAL,
+      theme.HORIZONTAL,
       Math.floor((padValue - 1) / 2) + leftOver
     )}`;
   } else {
@@ -122,7 +150,7 @@ function connectedBox(boxRows, rowIndex, cellIndex, columnWidth, rowHeight) {
   }
 
   if (hasBottom) {
-    result += `\n${padCenter(VERTICAL, padValue)}`;
+    result += `\n${padCenter(theme.VERTICAL, padValue)}`;
   } else {
     result += `\n${padCenter(" ", padValue)}`;
   }
@@ -146,7 +174,7 @@ function printJoinedBoxes(boxes, rowHeight) {
     const line =
       isBoxEmpty(box) || isBoxEmpty(boxes[index - 1])
         ? "   "
-        : repeatStr(HORIZONTAL, 3);
+        : repeatStr(theme.HORIZONTAL, 3);
     return [
       acc[0] + "   " + lines[0],
       acc[1] + line + lines[1],
@@ -218,7 +246,9 @@ function createChart(str) {
           process.stdout.write("".padStart(columnWidths[cellIndex] + 7));
           return;
         }
-        process.stdout.write(padCenter(VERTICAL, columnWidths[cellIndex] + 4));
+        process.stdout.write(
+          padCenter(theme.VERTICAL, columnWidths[cellIndex] + 4)
+        );
         process.stdout.write("   ");
       });
     }
